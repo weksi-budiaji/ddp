@@ -1,0 +1,84 @@
+---
+title: "Desirable Dietary Pattern (Pola Pangan Harapan)"
+author: "Weksi Budiaji"
+date: "`r Sys.Date()`"
+output: html_vignette
+references:
+- id: bkp
+  title: Aplikasi Harmonisasi Analisis PPH Data Susenas 2017
+  author:
+  - family: BKP
+    given: Kementan.   
+  container-title: Aplikasi Perhitungan MS Exel 
+  publisher: Badan Ketahanan Pangan Kementerian Pertanian
+  type: article-journal
+  issued:
+    year: 2017
+
+vignette: >
+  %\VignetteIndexEntry{Desirable Dietary Pattern}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## 1. Introduction (*Pendahuluan*)
+
+The **ddp** package is designed to measure the desirable dietary pattern (DDP). The database to calculate the DDP is based on the Indonesia national survey 2017 [@bkp].
+
+There two functions in this package. 
+
++ Calory calculation 
++ DDP score computation 
+
+Both functions require *n x 218* data frame. The name of the respondents has to be stored in the first column. The other 217 columns are the type of food consumed by each respondent. The values in the data frame have to be in gram such that the calory and DDP calculation are correct (*see* `?simulasi` to set and choose the type of food correctly).
+
+*Paket ddp digunakan untuk menghitung pola pangan harapan. Data yang digunakan sebagai dasar perhitungan adalah survey nasional tahun 2017.*
+
+*Ada dua fungsi dalam paket ini.*
+
++ *Perhitungan kalori*
++ *Perhitungan PPH*
+
+*Kedua fungsi tersebut memerlukan data frame dengan ukuran n x 218. Kolom pertama dari data adalah nama responden. 217 kolom yang lain adalah jenis makanan yang dikonsumsi oleh responden. Nilai didalam data harus dalam bentuk gram agar perhitungan kalori dan PPH benar (lihat `?simulasi` untuk memasukkan dan memilih jenis makanan secara tepat)*
+
+
+## 2. Calory calculation (*Perhitungan kalori*)
+
+A data frame must be supplied in `kalori` function. The data frame has a dimension of *n x 218*, which the name of the respondent being the first column. If `output = "all"`, the measures of enery, protein, fat, and carbohidrate of each respondent are obtained (in cal).
+
+*Perhitungan kalori mengharuskan data sebagai input. Data tersebut berupa dataframe dengan ukuran n x 218, dengan kolom pertama berisi nama responden. Jika `output = "all"` dipilih maka hasil yang diperoleh adalah nilai energi, protein, lemak, dan karbohidrat (dalam kalori) tiap responden muncul.*
+
+```{r}
+library(ddp)
+data("simulasi")
+kalori(simulasi, output = "energi")
+#all output
+kalori(simulasi)
+```
+
+## 3. DDP score computation (*Perhitungan PPH*)
+
+DDP score can be calculated via `skorpph` function. The input is a data frame with the dimension of n x 218, where the first column is the name of the respondents. The origin of the respondent is supplied in  `wilayah` argument. If the respondents come from Banten province, for example, `Banten` can be applied. All possible arguments can be listed by `?skorpph`. The minimum calory required per person per day is in `baseline` argument. The standard for Indonesian people is 2000 calory per person per day.
+
+*Perhitungan skor pph menggunakan fungsi `skorpph` pada data n x 218, dengan kolom pertama adalah kolom nama. `wilayah` digunakan untuk menunjukkan diwilayah mana responden berasal. Jika semua responden berasal dari Propinsi Banten, misalnya, `Banten` dapat digunakan sebagai input. Wilayah mana saja yang dapat digunakan sebagai input dapat dilihat dengan mengetik `?skorpph`. Argumen `baseline` digunakan sebagai nilai baseline minimal kalori yang dibutuhkan tiap orang. Untuk Indonesia pada umumnya diperlukan 2000 kalori per orang per hari.*
+
+```{r}
+skorpph(simulasi, wilayah = "Banten")
+skorpph(simulasi, wilayah = "Maluku")
+```
+
+## 4. Additional function (*Fungsi tambahan*)
+
+The additional function is `valid` function. It calculates the item-rest correlation to check the validity and reliability of items. The input is a data frame/ matrix with the dimension of n x k. The total score of the items is excluded (default). However, when it is included, the index of the column of the total score has to be specified in the `total` argument.
+
+*Fungsi tambahan adalah fungsi `valid` yang menghitung korelasi antara total skor dengan tiap item. Fungi ini menghitung korelasi untuk tes validitas dan reliabilitas tiap item. Data yang dimasukkan dapat berupa data frame maupun matriks dengan dimensi n x k. Total item dapat tidak diikutsertakan pada data frame atau matriks. Jika total item dimasukkan, indeks kolomnya harus disebutkan pada argumen `total`*
+
+```{r}
+set.seed(1)
+dat <- matrix(sample(1:7,10*5, replace = TRUE), 10,5)
+valid(dat)
+```
+
+***
+
+# References
